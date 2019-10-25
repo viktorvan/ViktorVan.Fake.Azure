@@ -1,5 +1,7 @@
+generate_load_scripts: true
+
 source https://api.nuget.org/v3/index.json
-framework: auto-detect
+framework: netstandard2.0
 storage: none
 
 nuget FSharp.Core 4.5.4

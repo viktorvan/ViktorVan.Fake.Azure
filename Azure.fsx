@@ -1,4 +1,9 @@
 module ViktorVan.Fake.Azure
+
+#if !FAKE
+#load ".paket/load/main.group.fsx"
+#endif
+
 open System
 
 open Fake.Core
