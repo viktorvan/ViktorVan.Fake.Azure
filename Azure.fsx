@@ -148,6 +148,7 @@ module AppInsights =
         |> toJson
         |> getInstrumentationKey
 
+
 module Storage =
     let createAccount (ResourceGroupName resourceGroup) (StorageAccountName name) (location:Location) (sku:StorageSku) =
         let getConnectionString (json:JsonValue) =
@@ -190,7 +191,16 @@ module Storage =
         |> ignore
 
     let deleteAll (ConnectionString storageConnectionString) (BlobName blob) =
-        [ "storage"; "blob"; "delete-batch"; "-s"; blob; "--pattern"; "'*'"; "--connection-string"; storageConnectionString ]
+        let escaped str = str |> sprintf "'%s'"
+        [ "storage"
+          "blob"
+          "delete-batch"
+          "--pattern"
+          "'*'"
+          "--connection-string"
+          (escaped storageConnectionString)
+          "--source"
+          (escaped blob) ]
         |> az
         |> ignore
 
