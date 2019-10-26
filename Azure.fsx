@@ -191,16 +191,15 @@ module Storage =
         |> ignore
 
     let deleteAll (ConnectionString storageConnectionString) (BlobName blob) =
-        let escaped str = str |> sprintf "'%s'"
         [ "storage"
           "blob"
           "delete-batch"
           "--pattern"
           "'*'"
           "--connection-string"
-          (escaped storageConnectionString)
+          storageConnectionString
           "--source"
-          (escaped blob) ]
+          blob ]
         |> az
         |> ignore
 
