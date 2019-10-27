@@ -12,12 +12,12 @@ open FSharp.Data.JsonExtensions
 
 module Tools =
     let private traceProcessOutput (res: ProcessResult<ProcessOutput>) =
-        Trace.trace "Result trace:"
-        res.Result.Output |> Trace.trace
+        Trace.tracefn "Result trace:"
+        res.Result.Output |> Trace.tracefn "%s"
         res
 
     let private traceResult (res: ProcessResult<_>) =
-        sprintf "%A" res.Result |> Trace.trace
+        res.Result |> Trace.tracefn "%A" 
         res
 
     let run cmd args workingDir =
