@@ -11,6 +11,15 @@ open FSharp.Data
 open FSharp.Data.JsonExtensions
 
 module Tools =
+    let private traceProcessOutput (res: ProcessResult<ProcessOutput>) =
+        Trace.trace "Result trace:"
+        res.Result.Output |> Trace.trace
+        res
+
+    let private traceResult (res: ProcessResult<_>) =
+        sprintf "%A" res.Result |> Trace.trace
+        res
+
     let run cmd args workingDir =
         let arguments =
             args
@@ -21,9 +30,11 @@ module Tools =
         |> CreateProcess.withWorkingDirectory workingDir
         |> CreateProcess.ensureExitCode
         |> Proc.run
+        |> traceResult
         |> ignore
 
     let runWithResult cmd args =
+        printfn "Args will be\n%A" args
         let raiseError (res: ProcessResult<ProcessOutput>) =
             if res.ExitCode <> 0 then failwith res.Result.Error
             else res
@@ -31,6 +42,7 @@ module Tools =
         CreateProcess.fromRawCommand cmd args
         |> CreateProcess.redirectOutput
         |> Proc.run
+        |> traceProcessOutput
         |> raiseError
 
 let private az args = 
@@ -195,11 +207,11 @@ module Storage =
           "blob"
           "delete-batch"
           "--pattern"
-          "'*'"
-          "--connection-string"
-          storageConnectionString
+          "*"
           "--source"
-          blob ]
+          blob
+          "--connection-string"
+          storageConnectionString ]
         |> az
         |> ignore
 
